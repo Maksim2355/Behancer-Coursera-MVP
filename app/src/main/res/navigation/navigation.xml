@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/projectsFragment"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/projectsFragment"
+        android:name="com.elegion.test.behancer.ui.ProjectsFragment"
+        android:label="ProjectsFragment" >
+        <action
+            android:id="@+id/action_projectsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.elegion.test.behancer.ui.ProfileFragment"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_userProjectsFragment"
+            app:destination="@id/userProjectsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProjectsFragment"
+        android:name="com.elegion.test.behancer.ui.UserProjectsFragment"
+        android:label="fragment_user_projects"
+        tools:layout="@layout/fragment_user_projects" />
+</navigation>
