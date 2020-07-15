@@ -3,6 +3,7 @@ package com.elegion.test.behancer.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.common.BasePresenter;
+import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.views.ProjectsView;
 import com.elegion.test.behancer.utils.ApiUtils;
 import com.elegion.test.behancer.data.Storage;
@@ -37,6 +38,23 @@ public class ProjectsPresenter extends BasePresenter<ProjectsView> {
                                 response -> getViewState().showProjects(response.getProjects()),
                                 throwable -> getViewState().showError())
         );
+    }
+
+    public void getProjects(String user){
+        mCompositeDisposable.add(
+                ApiUtils.getApiService().getUserProjectsInfo(user)
+                        .subscribeOn(Schedulers.io())
+                        .doOnSuccess(mStorage::insertProjects)
+                        .onErrorReturn(throwable ->
+                                ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> getViewState().showRefresh())
+                .doFinally(getViewState()::hideRefresh)
+                .subscribe(
+                        response -> getViewState().showProjects(response.getProjects()),
+                        throwable -> getViewState().showError())
+        );
+
     }
 
     public void openProfileFragment(String username) {

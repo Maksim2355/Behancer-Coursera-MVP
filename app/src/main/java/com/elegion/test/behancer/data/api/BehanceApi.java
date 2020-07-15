@@ -1,6 +1,7 @@
 package com.elegion.test.behancer.data.api;
 
 import com.elegion.test.behancer.data.model.project.ProjectResponse;
+import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.data.model.user.UserResponse;
 
 import io.reactivex.Single;
@@ -19,4 +20,7 @@ public interface BehanceApi {
 
     @GET("v2/users/{username}")
     Single<UserResponse> getUserInfo(@Path("username") String username);
+
+    @GET("v2/users/{user}/projects")
+    Single<ProjectResponse> getUserProjectsInfo(@Path("user") String user);
 }

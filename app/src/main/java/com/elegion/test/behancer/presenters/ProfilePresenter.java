@@ -36,7 +36,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
                 ));
     }
 
-    void openUserProjects(User user){
+    public void openUserProjects(String user){
         getViewState().openUserWorks(user);
     }
 

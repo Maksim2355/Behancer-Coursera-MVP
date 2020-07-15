@@ -7,5 +7,5 @@ public interface ProfileView extends BaseView {
 
     void bind(User user);
 
-    void openUserWorks(User user);
+    void openUserWorks(String username);
 }

@@ -44,6 +44,8 @@ public class ProfileFragment extends PresenterFragment implements Refreshable, P
     private TextView mProfileCreatedOn;
     private TextView mProfileLocation;
     private Button mViewWorksBtn;
+    private User mUser;
+
 
     @InjectPresenter
     ProfilePresenter mProfilePresenter;
@@ -77,12 +79,13 @@ public class ProfileFragment extends PresenterFragment implements Refreshable, P
         mProfileLocation = view.findViewById(R.id.tv_location_details);
 
         mRouting = (RoutingFragment)getActivity();
+
+        mViewWorksBtn.setOnClickListener(v -> mProfilePresenter.openUserProjects(mUser.getUsername()));
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         if (getArguments() != null) {
             mUsername = getArguments().getString(USERNAME);
         }
@@ -104,7 +107,7 @@ public class ProfileFragment extends PresenterFragment implements Refreshable, P
     public void bind(User user) {
         mErrorView.setVisibility(View.GONE);
         mProfileView.setVisibility(View.VISIBLE);
-
+        mUser = user;
         Picasso.with(getContext())
                 .load(user.getImage().getPhotoUrl())
                 .fit()
@@ -115,9 +118,9 @@ public class ProfileFragment extends PresenterFragment implements Refreshable, P
     }
 
     @Override
-    public void openUserWorks(User user) {
+    public void openUserWorks(String username) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("USER", user);
+        bundle.putString("USER", username);
         mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
     }
 
