@@ -54,6 +54,7 @@ public class AppActivity extends MvpAppCompatActivity
         mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(refreshing));
     }
 
+
     @Override
     public void startScreen(int destination, Bundle bundle) {
         navController.navigate(destination, bundle);
