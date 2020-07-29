@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_projects"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
@@ -11,7 +17,9 @@
         android:visibility="gone" />
 
     <include
-        layout="@layout/v_error"
+        layout="@layout/view_error"
         android:visibility="gone" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

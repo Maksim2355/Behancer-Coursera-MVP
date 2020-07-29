@@ -4,12 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <include
-        layout="@layout/v_profile"
+        layout="@layout/view_profile"
         android:visibility="gone" />
 
     <include
-        layout="@layout/v_error"
+        layout="@layout/view_error"
         android:visibility="gone" />
 
     <Button
@@ -20,5 +25,7 @@
         android:layout_margin="8dp"
         android:textColor="#FFFFFF"
         android:text="View user projects"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

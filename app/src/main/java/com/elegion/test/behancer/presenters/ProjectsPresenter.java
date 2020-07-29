@@ -3,10 +3,12 @@ package com.elegion.test.behancer.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.common.BasePresenter;
-import com.elegion.test.behancer.data.model.user.User;
-import com.elegion.test.behancer.views.ProjectsView;
+import com.elegion.test.behancer.data.api.BehanceApi;
+import com.elegion.test.behancer.views.ProjectsRefreshView;
 import com.elegion.test.behancer.utils.ApiUtils;
 import com.elegion.test.behancer.data.Storage;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -16,17 +18,22 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @InjectViewState
-public class ProjectsPresenter extends BasePresenter<ProjectsView> {
+public class ProjectsPresenter extends BasePresenter<ProjectsRefreshView> {
 
-    private final Storage mStorage;
+    @Inject
+    Storage mStorage;
 
+    @Inject
+    BehanceApi mApi;
+
+    @Inject
     public ProjectsPresenter(Storage storage) {
         mStorage = storage;
     }
 
     public void getProjects() {
         mCompositeDisposable.add(
-                ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
+                mApi.getProjects(BuildConfig.API_QUERY)
                         .subscribeOn(Schedulers.io())
                         .doOnSuccess(mStorage::insertProjects)
                         .onErrorReturn(throwable ->
@@ -42,7 +49,7 @@ public class ProjectsPresenter extends BasePresenter<ProjectsView> {
 
     public void getProjects(String user){
         mCompositeDisposable.add(
-                ApiUtils.getApiService().getUserProjectsInfo(user)
+                mApi.getUserProjectsInfo(user)
                         .subscribeOn(Schedulers.io())
                         .doOnSuccess(mStorage::insertProjects)
                         .onErrorReturn(throwable ->

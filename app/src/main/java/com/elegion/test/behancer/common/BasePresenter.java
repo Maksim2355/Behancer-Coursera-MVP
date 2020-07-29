@@ -1,19 +1,14 @@
 package com.elegion.test.behancer.common;
 
 
-import com.arellomobile.mvp.MvpPresenter;
-
 import io.reactivex.disposables.CompositeDisposable;
+import moxy.MvpPresenter;
 
-/**
- * Created by Vladislav Falzan.
- */
 
-public abstract class BasePresenter<View extends BaseView> extends MvpPresenter<View> {
+
+public abstract class BasePresenter<View extends BaseRefreshView> extends MvpPresenter<View> {
 
     protected final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
-    public void disposeAll() {
-            mCompositeDisposable.dispose();
-    }
+    public void disposeAll() { mCompositeDisposable.dispose(); }
 }

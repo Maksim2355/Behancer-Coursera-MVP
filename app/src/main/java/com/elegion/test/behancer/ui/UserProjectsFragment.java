@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,58 +19,45 @@ import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BasePresenter;
-import com.elegion.test.behancer.common.BaseView;
-import com.elegion.test.behancer.common.PresenterFragment;
+import com.elegion.test.behancer.common.PresenterRefreshFragment;
 import com.elegion.test.behancer.common.RefreshOwner;
 import com.elegion.test.behancer.common.Refreshable;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.project.Project;
-import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.presenters.ProjectsPresenter;
-import com.elegion.test.behancer.views.ProjectsView;
+import com.elegion.test.behancer.views.ProjectsRefreshView;
 
 import java.util.List;
 
 
-public class UserProjectsFragment extends PresenterFragment
-        implements Refreshable, ProjectsView {
+public class UserProjectsFragment extends PresenterRefreshFragment
+        implements ProjectsRefreshView {
 
-    private static final String USER_TAG = "USER";
-    private String mUser;
+    public static final String USERNAME = "USERNAME";
+
+    private String mUsername;
 
     private RecyclerView mRecyclerView;
     private RefreshOwner mRefreshOwner;
     private View mErrorView;
+
     private Storage mStorage;
     private ProjectsAdapter mProjectsAdapter;
 
     private RoutingFragment routing;
 
-    @InjectPresenter
-    ProjectsPresenter mPresenter;
-
-    @ProvidePresenter
-    ProjectsPresenter providePresenter() {
-        return new ProjectsPresenter(mStorage);
-    }
-
-
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Storage.StorageOwner) {
-            mStorage = ((Storage.StorageOwner) context).obtainStorage();
-        }
-        if (context instanceof RefreshOwner) {
-            mRefreshOwner = ((RefreshOwner) context);
-        }
+        routing = (RoutingFragment) context;
+        if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
+        else mUsername = null;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mRecyclerView = view.findViewById(R.id.recycler);
-        mUser = getArguments().getString(USER_TAG);
         mErrorView = view.findViewById(R.id.errorView);
         routing = (RoutingFragment) getActivity();
     }
@@ -77,27 +65,16 @@ public class UserProjectsFragment extends PresenterFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) {
-            getActivity().setTitle(R.string.projects);
-        }
         mProjectsAdapter = new ProjectsAdapter(null);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mProjectsAdapter);
 
-        onRefreshData();
     }
 
-    @Override
-    public void onDetach() {
-        mStorage = null;
-        mRefreshOwner = null;
-        super.onDetach();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_user_projects, container, false);
     }
 
@@ -108,18 +85,18 @@ public class UserProjectsFragment extends PresenterFragment
     }
 
     @Override
-    public void onRefreshData() {
-        mPresenter.getProjects(mUser);
+    protected SwipeRefreshLayout getSwipeRefreshLayout(View v) {
+        return v.findViewById(R.id.refresh_userProjects);
     }
 
     @Override
     public void showRefresh() {
-        mRefreshOwner.setRefreshState(true);
+        setRefreshState(true);
     }
 
     @Override
     public void hideRefresh() {
-        mRefreshOwner.setRefreshState(false);
+        setRefreshState(false);
     }
 
     @Override
@@ -137,6 +114,11 @@ public class UserProjectsFragment extends PresenterFragment
 
     @Override
     public void openProfileFragment(@NonNull String username) {
-        //
+        //TODO возможное добавление вторго экрана
+    }
+
+    @Override
+    public void onRefresh() {
+
     }
 }

@@ -5,27 +5,25 @@ import androidx.room.Room;
 
 import com.elegion.test.behancer.data.database.BehanceDatabase;
 import com.elegion.test.behancer.data.Storage;
-
-/**
- * Created by Vladislav Falzan.
- */
+import com.elegion.test.behancer.di.components.AppComponent;
+import com.elegion.test.behancer.di.components.DaggerAppComponent;
+import com.elegion.test.behancer.di.modules.AppModule;
+import com.elegion.test.behancer.di.modules.NetworkModule;
 
 public class AppDelegate extends Application {
 
-    private Storage mStorage;
+    private static AppComponent sAppComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        final BehanceDatabase database = Room.databaseBuilder(this, BehanceDatabase.class, "behance_database")
-                .fallbackToDestructiveMigration()
+        sAppComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
                 .build();
-
-        mStorage = new Storage(database.getBehanceDao());
     }
 
-    public Storage getStorage() {
-        return mStorage;
+    public static AppComponent getAppComponent(){
+        return sAppComponent;
     }
 }
