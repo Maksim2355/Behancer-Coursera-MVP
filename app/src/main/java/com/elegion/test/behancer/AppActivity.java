@@ -22,7 +22,6 @@ public class AppActivity extends MvpAppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         navController = Navigation.findNavController(this, R.id.nav_host_fr_container);
-
     }
 
     @Override
@@ -33,11 +32,18 @@ public class AppActivity extends MvpAppCompatActivity
 
     @Override
     public void startScreen(int destination, Bundle bundle) {
+        System.out.println("Осуществлен переход " + destination);
         navController.navigate(destination, bundle);
     }
 
     @Override
     public void popBackStack() {
+        System.out.println("Произошел бэкстэк");
         navController.popBackStack();
+    }
+
+    @Override
+    public void onBackPressed() {
+        popBackStack();
     }
 }

@@ -136,10 +136,14 @@ public class ProjectsFragment extends PresenterRefreshFragment
     }
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        AppDelegate.getInstance().stopFragmentComponent();
+    }
 
     @Override
     public void onDetach() {
-        AppDelegate.getInstance().stopFragmentComponent();
         super.onDetach();
     }
 

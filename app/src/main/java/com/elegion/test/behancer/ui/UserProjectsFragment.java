@@ -20,8 +20,6 @@ import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BasePresenter;
 import com.elegion.test.behancer.common.PresenterRefreshFragment;
-import com.elegion.test.behancer.common.RefreshOwner;
-import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.presenters.ProjectsPresenter;
 import com.elegion.test.behancer.views.ProjectsRefreshView;

@@ -4,12 +4,13 @@ import com.elegion.test.behancer.common.BaseRefreshView;
 import com.elegion.test.behancer.data.model.user.User;
 
 import moxy.viewstate.strategy.alias.AddToEndSingle;
+import moxy.viewstate.strategy.alias.Skip;
 
 public interface ProfileRefreshView extends BaseRefreshView {
 
     @AddToEndSingle
     void bind(User user);
 
-    @AddToEndSingle
+    @Skip
     void openUserWorks(String username);
 }

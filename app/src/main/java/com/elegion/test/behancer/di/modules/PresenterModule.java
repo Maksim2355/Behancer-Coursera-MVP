@@ -7,6 +7,8 @@ import com.elegion.test.behancer.di.customs_scopes.FragmentScope;
 import com.elegion.test.behancer.presenters.ProfilePresenter;
 import com.elegion.test.behancer.presenters.ProjectsPresenter;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,7 +26,6 @@ public class PresenterModule {
     public ProjectsPresenter provideProjectsPresenter(Storage storage, BehanceApi api){
         return new ProjectsPresenter(storage, api);
     }
-
 
 
 
