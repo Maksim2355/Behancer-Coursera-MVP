@@ -9,6 +9,8 @@ import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.data.model.user.Image;
 import com.elegion.test.behancer.data.model.user.User;
 
+import javax.inject.Inject;
+
 /**
  * Created by Vladislav Falzan.
  */

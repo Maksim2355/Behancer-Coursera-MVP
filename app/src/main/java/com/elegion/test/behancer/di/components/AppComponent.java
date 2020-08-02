@@ -2,9 +2,7 @@ package com.elegion.test.behancer.di.components;
 
 import com.elegion.test.behancer.di.modules.AppModule;
 import com.elegion.test.behancer.di.modules.NetworkModule;
-import com.elegion.test.behancer.ui.ProfileFragment;
-import com.elegion.test.behancer.ui.ProjectsFragment;
-import com.elegion.test.behancer.ui.UserProjectsFragment;
+import com.elegion.test.behancer.di.modules.RoutingModule;
 
 import javax.inject.Singleton;
 
@@ -14,9 +12,7 @@ import dagger.Component;
 @Component(modules = {AppModule.class, NetworkModule.class})
 public interface AppComponent {
 
-    void inject(ProjectsFragment projectsFragment);
+    ActivityComponent addActivityComponent(RoutingModule routingModule);
 
-    void inject(ProfileFragment profileFragment);
 
-    void inject(UserProjectsFragment userProjectsFragment);
 }

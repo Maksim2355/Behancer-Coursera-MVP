@@ -1,30 +1,38 @@
 package com.elegion.test.behancer.presenters;
 
-import com.arellomobile.mvp.InjectViewState;
 import com.elegion.test.behancer.common.BasePresenter;
 import com.elegion.test.behancer.data.Storage;
+import com.elegion.test.behancer.data.api.BehanceApi;
 import com.elegion.test.behancer.utils.ApiUtils;
 import com.elegion.test.behancer.views.ProfileRefreshView;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import moxy.InjectViewState;
 
 @InjectViewState
 public class ProfilePresenter extends BasePresenter<ProfileRefreshView> {
 
-    private final Storage mStorage;
+    private Storage mStorage;
 
-    public ProfilePresenter(Storage mStorage) {
+    private BehanceApi mApi;
+
+    @Inject
+    public ProfilePresenter(Storage mStorage, BehanceApi mApi) {
         this.mStorage = mStorage;
+        this.mApi = mApi;
     }
 
-    public void getProfile(String mUsername){
-        mCompositeDisposable.add(ApiUtils.getApiService().getUserInfo(mUsername)
+    public void loadProfile(String username){
+        mCompositeDisposable.add(
+                mApi.getUserInfo(username)
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(mStorage::insertUser)
                 .onErrorReturn(throwable ->
                         ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ?
-                                mStorage.getUser(mUsername) :
+                                mStorage.getUser(username) :
                                 null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> getViewState().showRefresh())
@@ -35,8 +43,8 @@ public class ProfilePresenter extends BasePresenter<ProfileRefreshView> {
                 ));
     }
 
-    public void openUserProjects(String user){
-        getViewState().openUserWorks(user);
+    public void openUserProjects(String username){
+        getViewState().openUserWorks(username);
     }
 
 

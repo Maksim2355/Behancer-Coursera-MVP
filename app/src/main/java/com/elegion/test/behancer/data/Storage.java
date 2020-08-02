@@ -14,6 +14,8 @@ import com.elegion.test.behancer.data.model.user.UserResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Vladislav Falzan.
  */
@@ -22,6 +24,7 @@ public class Storage {
 
     private BehanceDao mBehanceDao;
 
+    @Inject
     public Storage(BehanceDao behanceDao) {
         mBehanceDao = behanceDao;
     }

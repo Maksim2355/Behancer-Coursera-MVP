@@ -14,16 +14,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.elegion.test.behancer.AppDelegate;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.common.BasePresenter;
 import com.elegion.test.behancer.common.PresenterRefreshFragment;
 import com.elegion.test.behancer.data.model.user.User;
+import com.elegion.test.behancer.presenters.ProfilePresenter;
 import com.elegion.test.behancer.utils.DateUtils;
-import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.views.ProfileRefreshView;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 
 public class ProfileFragment extends PresenterRefreshFragment
@@ -36,22 +42,33 @@ public class ProfileFragment extends PresenterRefreshFragment
 
     private String mUsername;
 
-    private Storage mStorage;
-
-    private RoutingFragment mRouting;
-
     private ImageView mProfileImage;
     private TextView mProfileName;
     private TextView mProfileCreatedOn;
     private TextView mProfileLocation;
     private Button mViewWorksBtn;
 
+    @Inject
+    RoutingFragment mRouting;
+
+    @InjectPresenter
+    ProfilePresenter mProfilePresenter;
+
+    @Inject
+    Provider<ProfilePresenter> mProviderProfilePresenter;
+
+    @ProvidePresenter
+    ProfilePresenter provideProfilePresenter(){
+        return mProviderProfilePresenter.get();
+    }
+
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mRouting = (RoutingFragment)context;
         if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
         else mUsername = null;
+        AppDelegate.getInstance().startFragmentComponent().inject(this);
     }
 
     @Nullable
@@ -63,7 +80,7 @@ public class ProfileFragment extends PresenterRefreshFragment
 
     @Override
     protected BasePresenter getPresenter() {
-        return null;
+        return mProfilePresenter;
     }
 
     @Override
@@ -73,6 +90,7 @@ public class ProfileFragment extends PresenterRefreshFragment
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         init(view);
     }
 
@@ -83,19 +101,18 @@ public class ProfileFragment extends PresenterRefreshFragment
         if (getArguments() != null) {
             mUsername = getArguments().getString(USERNAME);
         }
-        mProfileView.setVisibility(View.VISIBLE);
+
+        onRefresh();
     }
 
     @Override
     public void bind(User user) {
         mErrorView.setVisibility(View.GONE);
         mProfileView.setVisibility(View.VISIBLE);
-
         Picasso.with(getContext())
                 .load(user.getImage().getPhotoUrl())
                 .fit()
                 .into(mProfileImage);
-
         mProfileName.setText(user.getDisplayName());
         mProfileCreatedOn.setText(DateUtils.format(user.getCreatedOn()));
         mProfileLocation.setText(user.getLocation());
@@ -126,7 +143,7 @@ public class ProfileFragment extends PresenterRefreshFragment
 
     @Override
     public void onRefresh() {
-
+        mProfilePresenter.loadProfile(mUsername);
     }
 
     private void init(View view) {
@@ -138,7 +155,12 @@ public class ProfileFragment extends PresenterRefreshFragment
         mProfileCreatedOn = view.findViewById(R.id.tv_created_on_details);
         mProfileLocation = view.findViewById(R.id.tv_location_details);
 
-        mViewWorksBtn.setOnClickListener(v -> mProfilePresenter.openUserProjects(mUser.getUsername()));
+        mViewWorksBtn.setOnClickListener(v -> mProfilePresenter.openUserProjects(mUsername));
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        AppDelegate.getInstance().stopFragmentComponent();
+    }
 }

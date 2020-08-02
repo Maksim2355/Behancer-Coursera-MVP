@@ -1,6 +1,8 @@
 package com.elegion.test.behancer.di.modules;
 
 
+import android.content.Context;
+
 import androidx.room.Room;
 
 import com.elegion.test.behancer.AppDelegate;
@@ -21,20 +23,20 @@ public class AppModule {
         this.mApp = mApp;
     }
 
+
     @Provides
     @Singleton
-    AppDelegate providerApp(){
+    public AppDelegate providerApp(){
         return mApp;
     }
 
     @Provides
     @Singleton
-    Storage providerStorage(){
+    public Storage providerStorage(){
         final BehanceDatabase database =
                 Room.databaseBuilder(mApp, BehanceDatabase.class, "behance_database")
                 .fallbackToDestructiveMigration()
                 .build();
-
         return new Storage(database.getBehanceDao());
     }
 

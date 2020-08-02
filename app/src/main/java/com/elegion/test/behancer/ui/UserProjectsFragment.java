@@ -13,21 +13,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
+
+import com.elegion.test.behancer.AppDelegate;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.adapters.ProjectsAdapter;
 import com.elegion.test.behancer.common.BasePresenter;
 import com.elegion.test.behancer.common.PresenterRefreshFragment;
 import com.elegion.test.behancer.common.RefreshOwner;
-import com.elegion.test.behancer.common.Refreshable;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.project.Project;
 import com.elegion.test.behancer.presenters.ProjectsPresenter;
 import com.elegion.test.behancer.views.ProjectsRefreshView;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 
 public class UserProjectsFragment extends PresenterRefreshFragment
@@ -38,28 +43,48 @@ public class UserProjectsFragment extends PresenterRefreshFragment
     private String mUsername;
 
     private RecyclerView mRecyclerView;
-    private RefreshOwner mRefreshOwner;
     private View mErrorView;
 
-    private Storage mStorage;
     private ProjectsAdapter mProjectsAdapter;
 
-    private RoutingFragment routing;
+    @Inject
+    RoutingFragment routing;
 
+    @InjectPresenter
+    ProjectsPresenter mUserProjectsPresenter;
+
+    @Inject
+    Provider<ProjectsPresenter> mProvideUserProjectsPresenter;
+
+    @ProvidePresenter
+    ProjectsPresenter providePresenterUserProjects(){
+        return mProvideUserProjectsPresenter.get();
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        routing = (RoutingFragment) context;
         if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
         else mUsername = null;
+
+        AppDelegate.getInstance().startFragmentComponent().inject(this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_user_projects, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init(view);
+    }
+
+    private void init(View view) {
         mRecyclerView = view.findViewById(R.id.recycler);
         mErrorView = view.findViewById(R.id.errorView);
-        routing = (RoutingFragment) getActivity();
     }
 
     @Override
@@ -69,19 +94,13 @@ public class UserProjectsFragment extends PresenterRefreshFragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mProjectsAdapter);
 
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user_projects, container, false);
+        onRefresh();
     }
 
 
     @Override
     protected BasePresenter getPresenter() {
-        return mPresenter;
+        return mUserProjectsPresenter;
     }
 
     @Override
@@ -119,6 +138,12 @@ public class UserProjectsFragment extends PresenterRefreshFragment
 
     @Override
     public void onRefresh() {
+        mUserProjectsPresenter.getProjects(mUsername);
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        AppDelegate.getInstance().stopFragmentComponent();
     }
 }

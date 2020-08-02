@@ -4,12 +4,9 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import com.elegion.test.behancer.Navigation.RoutingFragment;
-import com.elegion.test.behancer.common.RefreshOwner;
-import com.elegion.test.behancer.common.Refreshable;
 
 import moxy.MvpAppCompatActivity;
 
@@ -21,11 +18,18 @@ public class AppActivity extends MvpAppCompatActivity
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        AppDelegate.getInstance().startActivityComponent(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         navController = Navigation.findNavController(this, R.id.nav_host_fr_container);
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppDelegate.getInstance().stopActivityComponent();
+    }
 
     @Override
     public void startScreen(int destination, Bundle bundle) {

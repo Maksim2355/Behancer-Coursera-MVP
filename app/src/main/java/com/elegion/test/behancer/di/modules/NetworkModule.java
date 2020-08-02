@@ -42,7 +42,7 @@ public class NetworkModule {
     @Singleton
     Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .baseUrl(BuildConfig.API_URL)
+                .baseUrl("https://www.behance.net/")
                 // need for interceptors
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -50,9 +50,9 @@ public class NetworkModule {
                 .build();
     }
 
-    @Provides
     @Singleton
-    BehanceApi provideApiService(Retrofit retrofit) {
+    @Provides
+    public BehanceApi provideApiService(Retrofit retrofit) {
         return retrofit.create(BehanceApi.class);
     }
 

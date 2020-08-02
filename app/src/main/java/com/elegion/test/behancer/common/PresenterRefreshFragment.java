@@ -22,6 +22,7 @@ public abstract class PresenterRefreshFragment extends MvpAppCompatFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout = getSwipeRefreshLayout(view);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
