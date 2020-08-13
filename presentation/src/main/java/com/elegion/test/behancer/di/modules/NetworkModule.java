@@ -3,6 +3,7 @@ package com.elegion.test.behancer.di.modules;
 
 
 import com.google.gson.Gson;
+import com.lumi.data.BuildConfig;
 import com.lumi.data.api.ApiKeyInterceptor;
 import com.lumi.data.api.BehanceApi;
 
@@ -39,7 +40,7 @@ public class NetworkModule {
     @Singleton
     Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .baseUrl("https://www.behance.net/")
+                .baseUrl(BuildConfig.API_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
