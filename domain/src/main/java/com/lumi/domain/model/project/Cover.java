@@ -10,9 +10,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-/**
- * Created by Vladislav Falzan.
- */
+
 @Entity(foreignKeys = @ForeignKey(
         entity = Project.class,
         parentColumns = "id",
@@ -20,7 +18,7 @@ import java.io.Serializable;
 ))
 public class Cover implements Serializable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int mId;
 

@@ -84,7 +84,6 @@ public class ProjectsFragment extends PresenterRefreshFragment
         mProjectsAdapter = new ProjectsAdapter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mProjectsAdapter);
-
         onRefresh();
     }
 

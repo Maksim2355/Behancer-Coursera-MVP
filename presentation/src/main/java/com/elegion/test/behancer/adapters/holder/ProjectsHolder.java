@@ -29,13 +29,13 @@ public class ProjectsHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Project item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
-        Picasso.with(mImage.getContext()).load(item.getCover().getPhotoUrl())
-                .fit()
-                .into(mImage);
+            Picasso.with(mImage.getContext()).load(item.getCover().getPhotoUrl())
+                    .fit()
+                    .into(mImage);
 
-        mName.setText(item.getName());
-        mUsername.setText(item.getOwners().get(FIRST_OWNER_INDEX).getUsername());
-        mPublishedOn.setText(DateUtils.format(item.getPublishedOn()));
+          mName.setText(item.getName());
+         mUsername.setText(item.getOwners().get(FIRST_OWNER_INDEX).getUsername());
+         mPublishedOn.setText(DateUtils.format(item.getPublishedOn()));
 
         if (onItemClickListener != null) {
             itemView.setOnClickListener(v -> onItemClickListener.onItemClick(
