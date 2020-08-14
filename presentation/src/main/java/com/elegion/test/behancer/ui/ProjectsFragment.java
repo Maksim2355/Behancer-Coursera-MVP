@@ -13,9 +13,10 @@ import androidx.fragment.app.Fragment;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.databinding.ProjectsListBinding;
-import com.elegion.test.behancer.di.FragmentModule;
-import com.elegion.test.behancer.di.ScopeLifecycle;
-import com.elegion.test.behancer.di.TreeScope;
+import com.elegion.test.behancer.di.module.FragmentModule;
+import com.elegion.test.behancer.di.common.ScopeLifecycle;
+import com.elegion.test.behancer.di.common.TreeScope;
+import com.elegion.test.behancer.di.module.ServiceModule;
 import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 
 import javax.inject.Inject;
@@ -69,8 +70,8 @@ public class ProjectsFragment extends Fragment implements ScopeLifecycle {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         closeScope();
+        super.onDetach();
     }
 
     @Override

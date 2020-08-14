@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.elegion.test.behancer.databinding.UserProjectsBinding;
-import com.elegion.test.behancer.di.FragmentModule;
-import com.elegion.test.behancer.di.ScopeLifecycle;
-import com.elegion.test.behancer.di.TreeScope;
+import com.elegion.test.behancer.di.module.FragmentModule;
+import com.elegion.test.behancer.di.common.ScopeLifecycle;
+import com.elegion.test.behancer.di.common.TreeScope;
 import com.elegion.test.behancer.view_model.UserProjectsViewModel;
 
 import javax.inject.Inject;

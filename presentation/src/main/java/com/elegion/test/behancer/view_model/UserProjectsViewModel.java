@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class UserProjectsViewModel extends BaseRefreshViewModel {
@@ -31,10 +32,10 @@ public class UserProjectsViewModel extends BaseRefreshViewModel {
     @Override
     public void update() {
         mDisposable = mUserProjectService.getProject(mUsername)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))
-                .doOnSuccess(projects -> mIsListVisible.postValue(true))
-                .subscribeOn(Schedulers.io())
                 .subscribe(
                         response -> mProjectsUser.postValue(response),
                         throwable -> mIsListVisible.postValue(false));

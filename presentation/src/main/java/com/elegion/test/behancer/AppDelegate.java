@@ -3,16 +3,15 @@ package com.elegion.test.behancer;
 import android.app.Application;
 
 import com.elegion.test.behancer.Navigation.RoutingFragment;
-import com.elegion.test.behancer.di.ActivityModule;
-import com.elegion.test.behancer.di.AppModule;
-import com.elegion.test.behancer.di.NetworkModule;
-import com.elegion.test.behancer.di.RepositoryModule;
-import com.elegion.test.behancer.di.ServiceModule;
-import com.elegion.test.behancer.di.TreeScope;
+import com.elegion.test.behancer.di.module.ActivityModule;
+import com.elegion.test.behancer.di.module.AppModule;
+import com.elegion.test.behancer.di.module.NetworkModule;
+import com.elegion.test.behancer.di.module.RepositoryModule;
+import com.elegion.test.behancer.di.module.ServiceModule;
+import com.elegion.test.behancer.di.common.TreeScope;
 
 import toothpick.Scope;
 import toothpick.Toothpick;
-import toothpick.configuration.Configuration;
 
 public class AppDelegate extends Application {
 
@@ -28,13 +27,14 @@ public class AppDelegate extends Application {
 //        disabledReflection();
 
         mAppScope = Toothpick.openScope(TreeScope.APP_SCOPE)
-                    .installModules(new AppModule(this), new NetworkModule(), new RepositoryModule(), new ServiceModule());
+                    .installModules(new AppModule(this), new NetworkModule(), new RepositoryModule());
     }
 
     public Scope initActivityScope(RoutingFragment routing) {
         if (mActivityScope == null){
             mActivityScope = Toothpick.openScopes(TreeScope.APP_SCOPE, TreeScope.ACTIVITY_SCOPE).installModules(
-                    new ActivityModule(routing)
+                    new ActivityModule(routing),
+                    new ServiceModule()
             );
         }
         return mActivityScope;

@@ -1,4 +1,4 @@
-package com.elegion.test.behancer.di;
+package com.elegion.test.behancer.di.common;
 
 public class TreeScope {
     public static final String APP_SCOPE = "App_Scope";

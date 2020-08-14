@@ -14,17 +14,14 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ProjectServiceImpl implements ProjectService {
 
-    @Inject
-    @Named(ProjectRepository.SERVER)
-    ProjectRepository mProjectServerRepository;
+    private ProjectRepository mProjectServerRepository;
+    private ProjectRepository mProjectDbRepository;
 
     @Inject
-    @Named(ProjectRepository.DB)
-    ProjectRepository mProjectDbRepository;
-
-    @Inject
-    public ProjectServiceImpl(){}
-
+    public ProjectServiceImpl(ProjectRepository mProjectServerRepository,ProjectRepository mProjectDbRepository){
+        this.mProjectDbRepository = mProjectDbRepository;
+        this.mProjectServerRepository = mProjectServerRepository;
+    }
 
     @Override
     public Single<List<Project>> getProject() {

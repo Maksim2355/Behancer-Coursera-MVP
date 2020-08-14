@@ -13,15 +13,13 @@ import androidx.fragment.app.Fragment;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.databinding.ProfileBinding;
-import com.elegion.test.behancer.di.FragmentModule;
-import com.elegion.test.behancer.di.ScopeLifecycle;
-import com.elegion.test.behancer.di.TreeScope;
+import com.elegion.test.behancer.di.module.FragmentModule;
+import com.elegion.test.behancer.di.common.ScopeLifecycle;
+import com.elegion.test.behancer.di.common.TreeScope;
 import com.elegion.test.behancer.view_model.ProfileViewModel;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
-import toothpick.ProvidesSingletonInScope;
 import toothpick.Scope;
 import toothpick.Toothpick;
 

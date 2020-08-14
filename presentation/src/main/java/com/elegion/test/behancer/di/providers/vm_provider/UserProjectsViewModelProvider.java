@@ -1,8 +1,9 @@
-package com.elegion.test.behancer.di.providers;
+package com.elegion.test.behancer.di.providers.vm_provider;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import com.elegion.test.behancer.utils.BaseRefreshViewModelFactory;
+
+import com.elegion.test.behancer.factory.UserProjectViewModelFactory;
 import com.elegion.test.behancer.view_model.UserProjectsViewModel;
 import com.lumi.domain.service.userProject_service.UserProjectService;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ public class UserProjectsViewModelProvider implements Provider<UserProjectsViewM
 
     @Override
     public UserProjectsViewModel get() {
-        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(mUserProjectService, mUsername);
+        UserProjectViewModelFactory factory = new UserProjectViewModelFactory(mUserProjectService, mUsername);
         return ViewModelProviders.of(mFragment, factory).get(UserProjectsViewModel.class);
     }
 }

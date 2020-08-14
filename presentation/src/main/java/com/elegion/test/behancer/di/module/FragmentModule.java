@@ -1,10 +1,10 @@
-package com.elegion.test.behancer.di;
+package com.elegion.test.behancer.di.module;
 
 import androidx.fragment.app.Fragment;
 
-import com.elegion.test.behancer.di.providers.ProfileViewModelProvider;
-import com.elegion.test.behancer.di.providers.ProjectsListViewModelProvider;
-import com.elegion.test.behancer.di.providers.UserProjectsViewModelProvider;
+import com.elegion.test.behancer.di.providers.vm_provider.ProfileViewModelProvider;
+import com.elegion.test.behancer.di.providers.vm_provider.ProjectsListViewModelProvider;
+import com.elegion.test.behancer.di.providers.vm_provider.UserProjectsViewModelProvider;
 import com.elegion.test.behancer.view_model.ProfileViewModel;
 import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 import com.elegion.test.behancer.view_model.UserProjectsViewModel;

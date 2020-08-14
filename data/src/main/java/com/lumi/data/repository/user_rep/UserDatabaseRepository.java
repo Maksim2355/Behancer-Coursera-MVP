@@ -13,10 +13,12 @@ import io.reactivex.Single;
 
 public class UserDatabaseRepository implements UserRepository {
 
-    @Inject BehanceDao mBehanceDao;
+    private BehanceDao mBehanceDao;
 
     @Inject
-    public UserDatabaseRepository() { }
+    public UserDatabaseRepository(BehanceDao dao){
+        mBehanceDao = dao;
+    }
 
     @Override
     public Single<User> getUser(final String username) {

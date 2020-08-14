@@ -13,17 +13,14 @@ import io.reactivex.schedulers.Schedulers;
 
 public class UserServiceImpl implements UserService {
 
+    private UserRepository mUserServerRepository;
+    private UserRepository mUserDbRepository;
 
     @Inject
-    @Named(UserRepository.SERVER)
-    UserRepository mUserServerRepository;
-
-    @Inject
-    @Named(UserRepository.DB)
-    UserRepository mUserDbRepository;
-
-    @Inject
-    public UserServiceImpl(){}
+    public UserServiceImpl(UserRepository userServerRepository, UserRepository userDbRepository){
+        mUserDbRepository = userDbRepository;
+        mUserServerRepository = userServerRepository;
+    }
 
     @Override
     public Single<User> getUser(String username) {

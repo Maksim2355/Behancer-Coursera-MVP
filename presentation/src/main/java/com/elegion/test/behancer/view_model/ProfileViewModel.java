@@ -11,6 +11,7 @@ import com.lumi.domain.service.user_service.UserService;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class ProfileViewModel extends BaseRefreshViewModel {
@@ -34,10 +35,10 @@ public class ProfileViewModel extends BaseRefreshViewModel {
     @Override
     public void update() {
         mDisposable = mUserService.getUser(mUsername)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))
-                .doOnSuccess(user -> mIsListVisible.postValue(true))
-                .subscribeOn(Schedulers.io())
                 .subscribe(
                         response -> mUser.postValue(response),
                         throwable -> mIsListVisible.postValue(false)

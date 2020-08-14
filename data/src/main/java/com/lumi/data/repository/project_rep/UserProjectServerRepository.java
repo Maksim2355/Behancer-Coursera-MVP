@@ -16,10 +16,12 @@ import io.reactivex.functions.Function;
 
 public class UserProjectServerRepository implements UserProjectRepository {
 
-    @Inject BehanceApi mApi;
+    private BehanceApi mApi;
 
     @Inject
-    public UserProjectServerRepository(){ }
+    public UserProjectServerRepository(BehanceApi api){
+        mApi = api;
+    }
 
     @Override
     public Single<List<Project>> getUserProjects(final String username) {

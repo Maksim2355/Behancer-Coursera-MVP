@@ -1,4 +1,4 @@
-package com.elegion.test.behancer.di;
+package com.elegion.test.behancer.di.module;
 
 import androidx.room.Room;
 

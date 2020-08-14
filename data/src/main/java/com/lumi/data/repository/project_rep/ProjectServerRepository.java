@@ -16,11 +16,11 @@ import io.reactivex.functions.Function;
 
 public class ProjectServerRepository implements ProjectRepository {
 
-    @Inject
-    BehanceApi mApi;
+    private BehanceApi mApi;
 
     @Inject
-    public ProjectServerRepository(){
+    public ProjectServerRepository(BehanceApi api){
+        mApi = api;
     }
 
     @Override

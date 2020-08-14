@@ -1,9 +1,9 @@
-package com.elegion.test.behancer.di.providers;
+package com.elegion.test.behancer.di.providers.vm_provider;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.elegion.test.behancer.utils.BaseRefreshViewModelFactory;
+import com.elegion.test.behancer.factory.ProjectViewModelFactory;
 import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 import com.lumi.domain.service.project_service.ProjectService;
 
@@ -23,7 +23,7 @@ public class ProjectsListViewModelProvider implements Provider<ProjectsListViewM
 
     @Override
     public ProjectsListViewModel get() {
-        BaseRefreshViewModelFactory factory = new BaseRefreshViewModelFactory(mProjectService);
+        ProjectViewModelFactory factory = new ProjectViewModelFactory(mProjectService);
         return ViewModelProviders.of(mFragment, factory).get(ProjectsListViewModel.class);
     }
 }

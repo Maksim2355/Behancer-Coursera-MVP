@@ -18,10 +18,12 @@ import io.reactivex.Single;
 
 public class ProjectDatabaseRepository implements ProjectRepository {
 
-    @Inject BehanceDao mBehanceDao;
+    private BehanceDao mBehanceDao;
 
     @Inject
-    public ProjectDatabaseRepository(){ }
+    public ProjectDatabaseRepository(BehanceDao dao){
+        mBehanceDao = dao;
+    }
 
     @Override
     public Single<List<Project>> getProjects() {
@@ -32,7 +34,6 @@ public class ProjectDatabaseRepository implements ProjectRepository {
                 for (Project project : projects) {
                     project.setCover(mBehanceDao.getCoverFromProject(project.getId()));
                     project.setOwners(mBehanceDao.getOwnersFromProject(project.getId()));
-                    if(mBehanceDao.getCoverFromProject(project.getId()) == null) System.out.println("asdas");
                 }
                 return projects;
             }
