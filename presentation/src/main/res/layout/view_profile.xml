@@ -1,60 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+<data class="ProfileItemBinding">
+    <variable
+        name="user"
+        type="com.lumi.domain.model.user.User" />
 
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/view_profile"
-    android:layout_width="match_parent"
+</data>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
     >
-
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_profile"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         >
 
         <ImageView
             android:id="@+id/iv_profile"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:contentDescription="@string/content_description_details" />
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="16dp"
+            android:padding="16dp"
+            bind:imageUrl="@{user.image.photoUrl}"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_display_name_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/iv_profile"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@id/iv_profile"
-            android:layout_toRightOf="@id/iv_profile"
+            android:layout_marginTop="8dp"
+            android:text="@{user.username}"
+            android:textSize="16sp"
             android:textColor="@color/colorAccent"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/iv_profile" />
         <TextView
             android:id="@+id/tv_username_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/tv_display_name_details"
-            android:layout_alignStart="@id/tv_display_name_details"
-            android:layout_below="@id/tv_display_name_details" />
-
+            android:layout_marginTop="8dp"
+            android:textSize="15sp"
+            android:text="@{user.displayName}"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/tv_display_name_details" />
         <TextView
             android:id="@+id/tv_created_on_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/tv_username_details"
-            android:layout_alignStart="@id/tv_username_details"
-            android:layout_below="@id/tv_username_details" />
-
+            android:layout_marginTop="8dp"
+            android:textSize="15sp"
+            bind:createdOn="@{user.createdOn}"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/tv_username_details" />
         <TextView
             android:id="@+id/tv_location_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/tv_created_on_details"
+            android:layout_below="@id/tv_created_on_details"
             android:layout_alignStart="@id/tv_created_on_details"
-            android:layout_below="@id/tv_created_on_details" />
-
-    </RelativeLayout>
+            android:layout_alignLeft="@id/tv_created_on_details"
+            android:textSize="15sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="@{user.location}"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/tv_created_on_details"
+            bind:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
+
+</layout>
+
+
+
+
+
+
+
+

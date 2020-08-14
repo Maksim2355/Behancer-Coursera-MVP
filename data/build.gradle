@@ -52,15 +52,14 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.2.5'
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
 
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
-    //Dagger2
-    implementation 'com.google.dagger:dagger:2.28.1'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.28.1'
+    implementation "android.arch.paging:runtime:1.0.1"
 
-    //moxy mvp
-    String moxyVersion = "2.1.2";
-
-    implementation "com.github.moxy-community:moxy:$moxyVersion"
-    annotationProcessor "com.github.moxy-community:moxy-compiler:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-androidx:$moxyVersion"
+    //Toothpick
+    implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:3.1.0'
+    implementation 'com.github.stephanenicolas.toothpick:smoothie:3.1.0'
+    annotationProcessor 'com.github.stephanenicolas.toothpick:toothpick-compiler:3.1.0'
 }
