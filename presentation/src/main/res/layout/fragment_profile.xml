@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/refresh_profile"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+    <data class="ProfileBinding">
+        <import type="android.view.View" alias="View"/>
+        <variable
+            name="ViewModelProfile"
+            type="com.elegion.test.behancer.view_model.ProfileViewModel" />
+    </data>
 
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresherProfile"
+        bind:refreshState="@{ViewModelProfile.isLoading}"
+        bind:onRefreshListener="@{ViewModelProfile.onRefreshListener}"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:layout_width="match_parent">
 
-    <include
-        layout="@layout/view_profile"
-        android:visibility="gone" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <include
-        layout="@layout/view_error"
-        android:visibility="gone" />
+            <include
+                android:id="@+id/include"
+                layout="@layout/view_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:visibility="@{ViewModelProfile.isListVisible ? View.VISIBLE : View.GONE}"
+                app:user="@{ViewModelProfile.user}"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/goUserProjects_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:layout_margin="8dp"
-        android:textColor="#FFFFFF"
-        android:text="View user projects"/>
+            <include
+                layout="@layout/view_error"
+                android:visibility="gone"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/goUserProjects_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:onClick="@{ViewModelProfile.onBtnWorksListClickListener}"
+                android:text="Go user projects"
+                android:textColor="#FFFFFF"
+                bind:layout_constraintBottom_toBottomOf="parent"
+                bind:layout_constraintEnd_toEndOf="@+id/include"
+                bind:layout_constraintStart_toStartOf="@+id/include"
+                bind:layout_constraintTop_toBottomOf="@+id/include"
+                bind:layout_constraintVertical_bias="0.0" />
 
-    </androidx.cardview.widget.CardView>
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>

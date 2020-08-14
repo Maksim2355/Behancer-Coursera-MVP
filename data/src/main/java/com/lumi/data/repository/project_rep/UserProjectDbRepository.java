@@ -18,10 +18,11 @@ import io.reactivex.Single;
 
 public class UserProjectDbRepository implements UserProjectRepository {
 
-    @Inject BehanceDao mBehanceDao;
+    private BehanceDao mBehanceDao;
 
     @Inject
-    public UserProjectDbRepository(){
+    public UserProjectDbRepository(BehanceDao dao){
+        mBehanceDao = dao;
     }
 
     @Override

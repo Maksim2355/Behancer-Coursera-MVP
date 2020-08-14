@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data class="ProjectsListBinding">
+        <import type="android.view.View" alias="View"/>
+        <variable
+            name="ViewModelProjectsList"
+            type="com.elegion.test.behancer.view_model.ProjectsListViewModel" />
+    </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_projects"
+        android:id="@+id/refresherProjects"
+        bind:refreshState="@{ViewModelProjectsList.isLoading}"
+        bind:onRefreshListener="@{ViewModelProjectsList.onRefreshListener}"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                bind:clickHandler="@{ViewModelProjectsList.onItemClickListener}"
+                bind:data="@{ViewModelProjectsList.projects}"
+                android:visibility="@{ViewModelProjectsList.isListVisible ? View.VISIBLE : View.GONE}"
+                />
+            <include
+                layout="@layout/view_error"
+                android:visibility="@{ViewModelProjectsList.isListVisible ? View.GONE : View.VISIBLE}" />
 
-    <include
-        layout="@layout/view_error"
-        android:visibility="gone" />
+        </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-</LinearLayout>
+</layout>

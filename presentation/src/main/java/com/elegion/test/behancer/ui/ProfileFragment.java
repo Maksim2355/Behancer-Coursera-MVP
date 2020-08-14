@@ -2,165 +2,88 @@ package com.elegion.test.behancer.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.elegion.test.behancer.AppDelegate;
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
-import com.elegion.test.behancer.common.BasePresenter;
-import com.elegion.test.behancer.common.PresenterRefreshFragment;
-import com.elegion.test.behancer.presenters.ProfilePresenter;
-import com.elegion.test.behancer.utils.DateUtils;
-import com.elegion.test.behancer.views.ProfileRefreshView;
-import com.lumi.domain.model.user.User;
-import com.squareup.picasso.Picasso;
+import com.elegion.test.behancer.databinding.ProfileBinding;
+import com.elegion.test.behancer.di.module.FragmentModule;
+import com.elegion.test.behancer.di.common.ScopeLifecycle;
+import com.elegion.test.behancer.di.common.TreeScope;
+import com.elegion.test.behancer.view_model.ProfileViewModel;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
-import moxy.presenter.InjectPresenter;
-import moxy.presenter.ProvidePresenter;
+import toothpick.Scope;
+import toothpick.Toothpick;
 
 
-public class ProfileFragment extends PresenterRefreshFragment
-        implements ProfileRefreshView {
+public class ProfileFragment extends Fragment implements ScopeLifecycle {
 
     public static final String USERNAME = "USERNAME";
+    public static final String ID_FRAGMENT = "_ProfileFragment";
 
-    private View mErrorView;
-    private View mProfileView;
-
-    private String mUsername;
-
-    private ImageView mProfileImage;
-    private TextView mProfileName;
-    private TextView mProfileCreatedOn;
-    private TextView mProfileLocation;
-    private Button mViewWorksBtn;
+    @Inject
+    ProfileViewModel mProfileViewModel;
 
     @Inject
     RoutingFragment mRouting;
 
-    @InjectPresenter
-    ProfilePresenter mProfilePresenter;
-
-    @Inject
-    Provider<ProfilePresenter> mProviderProfilePresenter;
-
-    @ProvidePresenter
-    ProfilePresenter provideProfilePresenter(){
-        return mProviderProfilePresenter.get();
-    }
-
+    private String mUsername = "";
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    public void onAttach(Context context) {
         if (getArguments() != null) mUsername = getArguments().getString(USERNAME);
-        else mUsername = null;
-        AppDelegate.getInstance().startFragmentComponent().inject(this);
+        initScope();
+        super.onAttach(context);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        ProfileBinding binding = ProfileBinding.inflate(inflater, container, false);
+        binding.setViewModelProfile(mProfileViewModel);
+        binding.setLifecycleOwner(this);
+        requireActivity().setTitle(mUsername);
+        return binding.getRoot();
     }
-
-    @Override
-    protected BasePresenter getPresenter() {
-        return mProfilePresenter;
-    }
-
-    @Override
-    protected SwipeRefreshLayout getSwipeRefreshLayout(View v) {
-        return v.findViewById(R.id.refresh_profile);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-    }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getArguments() != null) {
-            mUsername = getArguments().getString(USERNAME);
-        }
-        onRefresh();
-    }
-
-
-    @Override
-    public void bind(User user) {
-        mErrorView.setVisibility(View.GONE);
-        mProfileView.setVisibility(View.VISIBLE);
-        Picasso.with(getContext())
-                .load(user.getImage().getPhotoUrl())
-                .fit()
-                .into(mProfileImage);
-        mProfileName.setText(user.getDisplayName());
-        mProfileCreatedOn.setText(DateUtils.format(user.getCreatedOn()));
-        mProfileLocation.setText(user.getLocation());
-    }
-
-    @Override
-    public void openUserWorks(String username) {
-        Bundle bundle = new Bundle();
-        bundle.putString(USERNAME, username);
-        mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
-    }
-
-    @Override
-    public void showRefresh() {
-        setRefreshState(true);
-    }
-
-    @Override
-    public void hideRefresh() {
-        setRefreshState(false);
-    }
-
-    @Override
-    public void showError() {
-        mProfileView.setVisibility(View.GONE);
-        mErrorView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onRefresh() {
-        mProfilePresenter.loadProfile(mUsername);
-    }
-
-    private void init(View view) {
-        mErrorView = view.findViewById(R.id.errorView);
-        mProfileView = view.findViewById(R.id.view_profile);
-        mViewWorksBtn = view.findViewById(R.id.goUserProjects_btn);
-        mProfileImage = view.findViewById(R.id.iv_profile);
-        mProfileName = view.findViewById(R.id.tv_display_name_details);
-        mProfileCreatedOn = view.findViewById(R.id.tv_created_on_details);
-        mProfileLocation = view.findViewById(R.id.tv_location_details);
-
-        mViewWorksBtn.setOnClickListener(v -> mProfilePresenter.openUserProjects(mUsername));
+        mProfileViewModel.getIsGoUserProjects().observe(getViewLifecycleOwner(),
+                aBoolean -> {
+                    if (aBoolean){
+                        mProfileViewModel.dispatchIsGoUserProjectsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(USERNAME, mUsername);
+                        mRouting.startScreen(R.id.action_profileFragment_to_userProjectsFragment, bundle);
+                    }
+        });
     }
 
     @Override
     public void onDetach() {
+        closeScope();
         super.onDetach();
-        AppDelegate.getInstance().stopFragmentComponent();
+    }
+
+    @Override
+    public void initScope() {
+        Scope frScope = Toothpick.openScopes(TreeScope.ACTIVITY_SCOPE, TreeScope.FRAGMENT_SCOPE + ID_FRAGMENT)
+                .installModules(new FragmentModule(this, mUsername));
+        Toothpick.inject(this, frScope);
+    }
+
+    @Override
+    public void closeScope() {
+        Toothpick.closeScope(TreeScope.FRAGMENT_SCOPE + ID_FRAGMENT);
     }
 }

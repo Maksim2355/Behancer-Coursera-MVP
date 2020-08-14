@@ -1,25 +1,27 @@
 package com.elegion.test.behancer.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.elegion.test.behancer.R;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.elegion.test.behancer.adapters.holder.ProjectsHolder;
+import com.elegion.test.behancer.databinding.ProjectItemBinding;
 import com.lumi.domain.model.project.Project;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @NonNull
-    private final List<Project> mProjects = new ArrayList<>();
-    private final OnItemClickListener mOnItemClickListener;
+    private List<Project> mProjects;
 
-    public ProjectsAdapter(OnItemClickListener onItemClickListener) {
+    private OnItemClickListener mOnItemClickListener;
+
+    public ProjectsAdapter(List<Project> projects, OnItemClickListener onItemClickListener) {
+        mProjects = projects;
         mOnItemClickListener = onItemClickListener;
     }
 
@@ -27,8 +29,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
     @Override
     public ProjectsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_projects, parent, false);
-        return new ProjectsHolder(view);
+        return new ProjectsHolder(ProjectItemBinding.inflate(inflater, parent, false));
     }
 
     @Override
@@ -39,20 +40,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @Override
     public int getItemCount() {
-        return mProjects.size();
+        return (mProjects == null) ? 0 : mProjects.size();
     }
 
-    public void addData(List<Project> data, boolean isRefreshed) {
-        if (isRefreshed) {
-            mProjects.clear();
-        }
-
-        mProjects.addAll(data);
-        notifyDataSetChanged();
-    }
-
-    public interface OnItemClickListener {
-
-        void onItemClick(String username);
-    }
 }

@@ -3,61 +3,65 @@ package com.elegion.test.behancer;
 import android.app.Application;
 
 import com.elegion.test.behancer.Navigation.RoutingFragment;
-import com.elegion.test.behancer.di.components.ActivityComponent;
-import com.elegion.test.behancer.di.components.AppComponent;
-import com.elegion.test.behancer.di.components.DaggerAppComponent;
-import com.elegion.test.behancer.di.components.FragmentComponent;
-import com.elegion.test.behancer.di.modules.AppModule;
-import com.elegion.test.behancer.di.modules.NetworkModule;
-import com.elegion.test.behancer.di.modules.PresenterModule;
-import com.elegion.test.behancer.di.modules.RepositoryModule;
-import com.elegion.test.behancer.di.modules.RoutingModule;
-import com.elegion.test.behancer.di.modules.ServiceModule;
+import com.elegion.test.behancer.di.module.ActivityModule;
+import com.elegion.test.behancer.di.module.AppModule;
+import com.elegion.test.behancer.di.module.NetworkModule;
+import com.elegion.test.behancer.di.module.RepositoryModule;
+import com.elegion.test.behancer.di.module.ServiceModule;
+import com.elegion.test.behancer.di.common.TreeScope;
+
+import toothpick.Scope;
+import toothpick.Toothpick;
 
 public class AppDelegate extends Application {
 
-    private AppComponent sAppComponent;
-    private ActivityComponent sActivityComponent;
-    private FragmentComponent sFragmentComponent;
-
     private static AppDelegate instance;
+
+    private Scope mAppScope;
+    private Scope mActivityScope;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        sAppComponent = DaggerAppComponent.builder()
-                .repositoryModule(new RepositoryModule())
-                .serviceModule(new ServiceModule())
-                .networkModule(new NetworkModule())
-                .appModule(new AppModule(this)).build();
+//        disabledReflection();
+
+        mAppScope = Toothpick.openScope(TreeScope.APP_SCOPE)
+                    .installModules(new AppModule(this), new NetworkModule(), new RepositoryModule());
     }
 
-    public ActivityComponent startActivityComponent(RoutingFragment routing){
-        if (sActivityComponent == null) {
-            sActivityComponent = sAppComponent.addActivityComponent(new RoutingModule(routing));
+    public Scope initActivityScope(RoutingFragment routing) {
+        if (mActivityScope == null){
+            mActivityScope = Toothpick.openScopes(TreeScope.APP_SCOPE, TreeScope.ACTIVITY_SCOPE).installModules(
+                    new ActivityModule(routing),
+                    new ServiceModule()
+            );
         }
-        return sActivityComponent;
+        return mActivityScope;
     }
 
-    public void stopActivityComponent(){
-        sActivityComponent = null;
-    }
-
-    public FragmentComponent startFragmentComponent(){
-        if (sFragmentComponent == null){
-            sFragmentComponent = sActivityComponent.addFragmentComponent(new PresenterModule());
-        }
-        return sFragmentComponent;
-    }
-
-    public void stopFragmentComponent(){
-        sFragmentComponent = null;
+    public void closeActivityScope() {
+        mActivityScope = null;
+        Toothpick.closeScope(TreeScope.ACTIVITY_SCOPE);
     }
 
 
+    public Scope getAppScope(){
+        return mAppScope;
+    }
+
+    public Scope getActivityScope() {return mActivityScope;}
 
     public static AppDelegate getInstance(){
         return instance;
     }
+
+//    private void disabledReflection(){
+//        Toothpick.setConfiguration(Configuration.forProduction().disableReflection());
+//        MemberInjectorRegistryLocator.setRootRegistry(
+//                new com.elegion.test.behancer.MemberInjectorRegistry());
+//
+//        FactoryRegistryLocator.setRootRegistry(
+//                new com.elegion.test.behancer.FactoryRegistry());
+//    }
 }

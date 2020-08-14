@@ -2,61 +2,44 @@ package com.elegion.test.behancer.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elegion.test.behancer.AppDelegate;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.elegion.test.behancer.Navigation.RoutingFragment;
 import com.elegion.test.behancer.R;
-import com.elegion.test.behancer.adapters.ProjectsAdapter;
-import com.elegion.test.behancer.common.BasePresenter;
-import com.elegion.test.behancer.common.PresenterRefreshFragment;
-import com.elegion.test.behancer.presenters.ProjectsPresenter;
-import com.elegion.test.behancer.views.ProjectsRefreshView;
-import com.lumi.domain.model.project.Project;
-
-
-import java.util.List;
+import com.elegion.test.behancer.databinding.ProjectsListBinding;
+import com.elegion.test.behancer.di.module.FragmentModule;
+import com.elegion.test.behancer.di.common.ScopeLifecycle;
+import com.elegion.test.behancer.di.common.TreeScope;
+import com.elegion.test.behancer.di.module.ServiceModule;
+import com.elegion.test.behancer.view_model.ProjectsListViewModel;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
-import moxy.presenter.InjectPresenter;
-import moxy.presenter.ProvidePresenter;
+import toothpick.Scope;
+import toothpick.Toothpick;
 
 
-public class ProjectsFragment extends PresenterRefreshFragment
-        implements ProjectsRefreshView, ProjectsAdapter.OnItemClickListener {
+public class ProjectsFragment extends Fragment implements ScopeLifecycle {
 
-    private RecyclerView mRecyclerView;
-    private View mErrorView;
-    private ProjectsAdapter mProjectsAdapter;
+    public static final String USERNAME = "USERNAME";
+    public static final String ID_FRAGMENT = "_ProjectsFragment";
 
     @Inject
-    RoutingFragment mRouting;
-
-    @InjectPresenter
-    ProjectsPresenter mProjectsPresenter;
+    ProjectsListViewModel mProjectsListViewModel;
 
     @Inject
-    Provider<ProjectsPresenter> mProjectsPresenterProvider;
-
-    @ProvidePresenter
-    ProjectsPresenter provideProjectsPresenter(){
-        return mProjectsPresenterProvider.get();
-    }
+    RoutingFragment mRoutingFragment;
 
 
     @Override
     public void onAttach(@NonNull Context context) {
-        AppDelegate.getInstance().startFragmentComponent().inject(this);
+        initScope();
         super.onAttach(context);
     }
 
@@ -64,90 +47,43 @@ public class ProjectsFragment extends PresenterRefreshFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_projects, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-    }
-
-    private void init(View v){
-        mRecyclerView = v.findViewById(R.id.recycler);
-        mErrorView = v.findViewById(R.id.errorView);
+        ProjectsListBinding binding = ProjectsListBinding.inflate(inflater, container, false);
+        binding.setViewModelProjectsList(mProjectsListViewModel);
+        binding.setLifecycleOwner(this);
+        requireActivity().setTitle("Projects");
+        return binding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        mProjectsListViewModel.getUserClick()
+                .observe(getViewLifecycleOwner(), s -> {
+                    if (!s.equals("")){
+                        mProjectsListViewModel.dispatchUsername();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(USERNAME, s);
+                        mRoutingFragment.startScreen(R.id.profileFragment, bundle);
+                    }
+        });
         super.onActivityCreated(savedInstanceState);
-        mProjectsAdapter = new ProjectsAdapter(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mProjectsAdapter);
-        onRefresh();
-    }
-
-
-    @Override
-    protected BasePresenter getPresenter() {
-        return mProjectsPresenter;
-    }
-
-    @Override
-    protected SwipeRefreshLayout getSwipeRefreshLayout(View v) {
-        return v.findViewById(R.id.refresh_projects);
-    }
-
-
-    @Override
-    public void showRefresh() {
-        setRefreshState(true);
-    }
-
-    @Override
-    public void hideRefresh() {
-        setRefreshState(false);
-    }
-
-    @Override
-    public void showError() {
-        mErrorView.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showProjects(@NonNull List<Project> projects) {
-        mErrorView.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mProjectsAdapter.addData(projects, true);
-    }
-
-    @Override
-    public void openProfileFragment(@NonNull String username) {
-        Bundle bundle = new Bundle();
-        bundle.putString("USERNAME", username);
-        mRouting.startScreen(R.id.action_projectsFragment_to_profileFragment, bundle);
-    }
-
-    @Override
-    public void onItemClick(String username) {
-       mProjectsPresenter.openProfileFragment(username);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        AppDelegate.getInstance().stopFragmentComponent();
     }
 
     @Override
     public void onDetach() {
+        closeScope();
         super.onDetach();
     }
 
     @Override
-    public void onRefresh() {
-        mProjectsPresenter.getProjects();
+    public void initScope() {
+        Scope frScope = Toothpick.openScopes(TreeScope.ACTIVITY_SCOPE, TreeScope.FRAGMENT_SCOPE + ID_FRAGMENT)
+                .installModules(new FragmentModule(this, ""));
+        Toothpick.inject(this, frScope);
+    }
+
+    @Override
+    public void closeScope() {
+        Toothpick.closeScope(TreeScope.FRAGMENT_SCOPE + ID_FRAGMENT);
     }
 }
+

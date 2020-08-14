@@ -14,16 +14,14 @@ import io.reactivex.schedulers.Schedulers;
 
 public class UserProjectServiceImpl implements UserProjectService {
 
-    @Inject
-    @Named(UserProjectRepository.SERVER)
-    UserProjectRepository mUserProjectServerRepository;
+    private UserProjectRepository mUserProjectServerRepository;
+    private UserProjectRepository mUserProjectDbRepository;
 
     @Inject
-    @Named(UserProjectRepository.DB)
-    UserProjectRepository mUserProjectDbRepository;
-
-    @Inject
-    public UserProjectServiceImpl(){}
+    public UserProjectServiceImpl(UserProjectRepository userProjectServerRepository, UserProjectRepository userProjectDbRepository){
+        mUserProjectServerRepository = userProjectServerRepository;
+        mUserProjectDbRepository = userProjectDbRepository;
+    }
 
     @Override
     public Single<List<Project>> getProject(String username) {
